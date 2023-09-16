@@ -1,3 +1,5 @@
+import json
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -30,4 +32,4 @@ async def health():
 @app.post("/recipes")
 async def query_recipes(o: IngredientsBody):
     results = mr.query(ingredients=o.ingredients)
-    return {"recipes": results}
+    return {"recipes": json.loads(json.dumps(results))}
