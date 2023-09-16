@@ -45,5 +45,10 @@ async def query_recipes(o: IngredientsBody):
 
 
 @app.post("/recipes_free_text")
-async def query_recipes(o: IngredientsFreeText):
+async def query_recipes_ft(o: IngredientsFreeText):
     return mr.free_text_query_indexed(o.text_input)
+
+
+@app.post("/feeling_lucky")
+async def query_recipes_lucky(o: IngredientsFreeText):
+    return {"generated_text": mr.free_text_query_lucky(o.text_input)}

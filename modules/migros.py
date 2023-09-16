@@ -192,3 +192,14 @@ class MigrosRetriever:
 
         return final_results
 
+    def free_text_query_lucky(self, text_input):
+        system = f"""
+            You are a chef assistant with an ability to generate recipes based on customer request. 
+            Please generate a title, list of ingredients and steps for the recipe.
+            """
+        self.query_engine = self.index.as_query_engine(
+            service_context=self.sc
+        )
+        response = self.query_engine.query(f'{system} \n customer request: {text_input}')
+        return str(response)
+
