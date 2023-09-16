@@ -96,6 +96,7 @@ class MigrosRetriever:
     def recipe_to_str(recipe_doc):
         ingredients_to_buy = recipe_doc[1]
         recipe = {
+            "id": recipe_doc[0].id,
             "name": recipe_doc[0].name,
             "description": str(recipe_doc[0].description),
             "ingredients": eval(recipe_doc[0].ingredients),
