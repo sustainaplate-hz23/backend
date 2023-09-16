@@ -39,6 +39,11 @@ async def query_recipes(o: IngredientsBody):
     return {"recipes": json.loads(json.dumps(results))}
 
 
+# @app.post("/recipes_free_text")
+# async def query_recipes(o: IngredientsFreeText):
+#     return mr.free_text_query(o.text_input)
+
+
 @app.post("/recipes_free_text")
 async def query_recipes(o: IngredientsFreeText):
-    return mr.free_text_query(o.text_input)
+    return mr.free_text_query_indexed(o.text_input)
