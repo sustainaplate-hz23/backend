@@ -211,5 +211,4 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-modules/migros_data_v3
 hz-env/
