@@ -4,4 +4,4 @@ fastapi
 uvicorn[standard]
 requests
 sentence_transformers
-
+pydantic
