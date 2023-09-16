@@ -1,0 +1,7 @@
+llama-index
+python-dotenv
+fastapi
+uvicorn[standard]
+requests
+sentence_transformers
+
