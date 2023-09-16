@@ -3,7 +3,7 @@ import json
 import requests
 from dotenv import load_dotenv
 from typing import Any
-from llama_index.llms import CustomLLM, CompletionResponse, CompletionResponseGen, LLMMetadata, LlamaCPP
+from llama_index.llms import CustomLLM, CompletionResponse, CompletionResponseGen, LLMMetadata
 from llama_index.llms.base import llm_completion_callback
 
 
