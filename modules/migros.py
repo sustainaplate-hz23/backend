@@ -111,11 +111,16 @@ class MigrosRetriever:
             "sustainability_score": sustainability_score
         }
 
-    def query(self, ingredients, text_input):
-        prompt = f"""
-        Customer request: {text_input}
-        Ingredients: {", ".join(ingredients)}
-        """
+    def query(self, ingredients, text_input=None):
+        if text_input:
+            prompt = f"""
+            Customer request: {text_input}
+            Ingredients: {", ".join(ingredients)}
+            """
+        else:
+            prompt = f"""
+            Ingredients: {", ".join(ingredients)}
+            """
 
         retriever = VectorIndexRetriever(
             index=self.index,
