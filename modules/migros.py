@@ -13,6 +13,7 @@ import pandas as pd
 class MigrosRetriever:
     def __init__(self):
         llm = BamLLM()
+        self.llm = llm
         self.sc = ServiceContext.from_defaults(
             llm=llm,
             context_window=int(os.getenv('CONTEXT_WINDOW')),
@@ -68,9 +69,6 @@ class MigrosRetriever:
             if match:
                 recipe_id = match.group(1)
                 matched_recipe_ids.append(int(recipe_id))
-                print("Recipe ID:", recipe_id)
-            else:
-                print("Recipe ID not found in the text.")
 
         filtered_recipes_df = final_recipes_df.loc[final_recipes_df['id'].isin(matched_recipe_ids)]
         chosen_recipes = []
@@ -131,3 +129,42 @@ class MigrosRetriever:
             final_results.append(o)
 
         return final_results
+
+    def input2ingredients(self, text_input):
+        examples = """
+        Customer request: I want a dinner for 2 person. I have bacon and eggs at home.
+        Ingredients: bacon, eggs
+        
+        Customer request: Dessert recipe with banana and vanilla pudding.
+        Ingredients: banana, vanilla pudding
+        
+        Customer request: I am making a lunch menu for 4 person. I want to have something with chicken and potatoes. I am lactose intolerant and my husband has nut allergy.
+        Ingredients: chicken, potatoes
+        """
+
+        system = f"""
+            You are a chef assistant with an ability to generate list of food ingredients based on Customer requests.
+            Example Customer requests are: \n {examples} \n
+            Do not response with any explanation or any other information except the Ingredients list.
+            You do not ever apologize and strictly generate statements based of the provided Ingredients examples.
+            Don't include other words than list of ingredients, seperated by commas and no extra comments!
+            After listing the ingredients just stop typing.
+            """
+
+        response = self.llm.complete(f'<s>[INST] <<SYS>>{system}<</SYS>> \nCustomer request: {text_input} [/INST]</s>')
+        return response.text
+
+    def free_text_query(self, text_input):
+        ingredients_output_text = self.input2ingredients(text_input)
+        try:
+            k = ingredients_output_text.split(':')
+            if len(k) > 1:
+                ingredients = k[1].strip().split(',')
+                normalized_ingredients = [i.lower().strip() for i in ingredients]
+                if len(normalized_ingredients) > 0:
+                    return self.query(normalized_ingredients)
+        except Exception as ex:
+            print('error', str(ex))
+        return "Sorry I don't understand"
+
+

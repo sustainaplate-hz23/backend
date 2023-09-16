@@ -24,6 +24,10 @@ class IngredientsBody(BaseModel):
     ingredients: List[str]
 
 
+class IngredientsFreeText(BaseModel):
+    text_input: str
+
+
 @app.get('/health')
 async def health():
     return {'status': 'healthy'}
@@ -33,3 +37,8 @@ async def health():
 async def query_recipes(o: IngredientsBody):
     results = mr.query(ingredients=o.ingredients)
     return {"recipes": json.loads(json.dumps(results))}
+
+
+@app.post("/recipes_free_text")
+async def query_recipes(o: IngredientsFreeText):
+    return mr.free_text_query(o.text_input)
