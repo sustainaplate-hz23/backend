@@ -111,8 +111,9 @@ class MigrosRetriever:
             "sustainability_score": sustainability_score
         }
 
-    def query(self, ingredients):
+    def query(self, ingredients, text_input):
         prompt = f"""
+        Customer request: {text_input}
         Ingredients: {", ".join(ingredients)}
         """
 
@@ -163,7 +164,7 @@ class MigrosRetriever:
                 ingredients = k[1].strip().split(',')
                 normalized_ingredients = [i.lower().strip() for i in ingredients]
                 if len(normalized_ingredients) > 0:
-                    return self.query(normalized_ingredients)
+                    return self.query(normalized_ingredients, text_input)
         except Exception as ex:
             print('error', str(ex))
         return "Sorry I don't understand"
