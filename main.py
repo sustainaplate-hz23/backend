@@ -2,9 +2,14 @@ import json
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from fastapi.requests import Request
 from pydantic import BaseModel
 from typing import List
 from modules.migros import MigrosRetriever
+
+templates = Jinja2Templates(directory="./build")
 
 mr = MigrosRetriever()
 mr.load_index()
@@ -18,6 +23,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.mount('/static', StaticFiles(directory="./build/static"), 'static')
 
 
 class IngredientsBody(BaseModel):
@@ -52,3 +59,8 @@ async def query_recipes_ft(o: IngredientsFreeText):
 @app.post("/feeling_lucky")
 async def query_recipes_lucky(o: IngredientsFreeText):
     return {"generated_text": mr.free_text_query_lucky(o.text_input)}
+
+
+@app.get("/{rest_of_path:path}")
+async def react_app(req: Request, rest_of_path: str):
+    return templates.TemplateResponse('index.html', { 'request': req })
